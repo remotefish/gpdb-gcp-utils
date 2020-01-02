@@ -20,6 +20,7 @@ upload_pkg()
 			;;
 		gz)
 			unpack="mkdir -p usr/local/greenplum-db-$gpversion; pushd usr/local/greenplum-db-$gpversion; tar zxf ../../../$pkgname; popd"
+			;;
 		*)
 			echo >&2 "error: unsupported package type: $extname"
 			exit 1
