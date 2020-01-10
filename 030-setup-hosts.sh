@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
-. config.sh
-. common.sh
+# Get the Current Working DIRectory (CWDIR) of this file
+CWDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. ${CWDIR}/config.sh
+. ${CWDIR}/common.sh
 
 setup_ssh()
 {
 	for host in $hosts; do
 		# generate pub keys
-		gcp_ssh $host -- bash -ex <<EOF
+		gcp_ssh $host -- bash -e <<EOF
 [ -f ~/.ssh/id_rsa ] || ssh-keygen -P '' -f ~/.ssh/id_rsa
 EOF
 
@@ -20,14 +23,14 @@ EOF
 	for host in $hosts; do
 		# authorize all pub keys
 		gcp_scp tmp/all.pub $host:/tmp/
-		gcp_ssh $host -- bash -ex <<EOF
+		gcp_ssh $host -- bash -e <<EOF
 cat /tmp/all.pub >> ~/.ssh/authorized_keys
 EOF
 	done
 
 	for host in $hosts; do
 		# mark all the pub keys as known
-		gcp_ssh $host -- bash -ex <<EOF
+		gcp_ssh $host -- bash -e <<EOF
 for h in $hosts; do
   ssh -o StrictHostKeyChecking=no \$h :
 done
@@ -38,7 +41,7 @@ EOF
 # install depends, setup sysctl and limits
 setup_system()
 {
-	gcp_scp misc/ $mdw:/tmp/
+	gcp_scp ${CWDIR}/misc/ $mdw:/tmp/
 
 	gcp_ssh $mdw -- bash -ex <<EOF
 . $gphome/greenplum_path.sh
