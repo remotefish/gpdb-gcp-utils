@@ -11,6 +11,7 @@ gcp_ssh()
 {
 	$gcloud compute \
 		ssh --zone $zone \
+                --ssh-flag=-T \
 		"$@"
 }
 
