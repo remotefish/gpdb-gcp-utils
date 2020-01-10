@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-. config.sh
-. common.sh
+# Get the Current Working DIRectory (CWDIR) of this file
+CWDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. ${CWDIR}/config.sh
+. ${CWDIR}/common.sh
 
 build_cluster()
 {
