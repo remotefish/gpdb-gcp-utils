@@ -47,14 +47,6 @@ gpscp -r -f ~/hostfile.segs $gphome =:opt/
 gpinitsystem -aq -B32 \
 	-c /tmp/misc/gpinitsystem.conf \
 	-h ~/hostfile.segs
-
-# setup gucs
-. $gpdata/me.env
-gpconfig -c optimizer -v off
-gpconfig -c log_statement -v ddl
-gpconfig -c gp_enable_global_deadlock_detector -v on
-# restart the cluster to enable GDD
-gpstop -raqi
 EOF
 
 	cat <<EOF
