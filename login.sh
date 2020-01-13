@@ -30,4 +30,4 @@ HINT: to use the cluster please source below files
 
 EOF
 
-gcp_ssh $host -- "$@"
+gcp_ssh $host --ssh-flag=-t -- "$@"
