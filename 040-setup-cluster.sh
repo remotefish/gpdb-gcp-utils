@@ -10,6 +10,16 @@ build_cluster()
 {
 	echo "creating the cluster at $gpdata ..."
 
+	local hostfile
+
+	if [ "$nsdws" -gt 0 ]; then
+		# create a multi-host cluster
+		hostfile='~/hostfile.segs'
+	else
+		# create a single-host cluster
+		hostfile='~/hostfile.all'
+	fi
+
 	gcp_ssh $mdw -- bash -ex <<EOF
 . $gphome/greenplum_path.sh
 
@@ -39,14 +49,16 @@ sed -ri \
     -e 's,^(__enable_standby)=.*$,\\1=$enable_standby,' \
     /tmp/misc/gpinitsystem.conf
 
-# copy gpdb binaries to segs
-gpssh -f ~/hostfile.segs mkdir -p opt/
-gpscp -r -f ~/hostfile.segs $gphome =:opt/
+if [ "$nsdws" -gt 0 ]; then
+	# copy gpdb binaries to segs
+	gpssh -f ~/hostfile.segs mkdir -p opt/
+	gpscp -r -f ~/hostfile.segs $gphome =:opt/
+fi
 
 # build the cluster
 gpinitsystem -aq -B32 \
 	-c /tmp/misc/gpinitsystem.conf \
-	-h ~/hostfile.segs
+	-h $hostfile
 EOF
 
 	cat <<EOF

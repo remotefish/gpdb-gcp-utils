@@ -32,3 +32,9 @@ There are some other helper scripts:
 ```
 - `setup-pgbench.sh`: setup the pgbench environment, a database `tpcb` will be
   created to hold the tables, the data scale is 1000;
+
+## Cookbook
+
+### How to create a single-host cluster?
+
+Set `nsdws=0` in `config.sh`

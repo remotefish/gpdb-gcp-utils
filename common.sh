@@ -24,8 +24,8 @@ get_hostname()
 
 join_hostnames()
 {
-	local sep="${1:- }"
-	local names="${2:-$hosts}"
+	local sep="$1"
+	local names="$2"
 
 	echo "${names// /$sep}"
 }

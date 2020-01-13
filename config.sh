@@ -11,6 +11,7 @@ gpversion=6.2.1
 gpport=2000
 
 # the number of sdw vms, they will be named as sdw1 ~ sdwn
+# set it to 0 to create a single host cluster
 nsdws=4
 
 # the number of segs per vm
@@ -83,13 +84,19 @@ esac
 
 # define the names of the vms
 mdw=$prefix-$os-mdw
-sdws=$(seq -s ' ' -f "$prefix-$os-sdw%.f" $nsdws)
-sdws=${sdws% }
+if [ "$nsdws" -gt 0 ]; then
+	sdws=$(seq -s ' ' -f "$prefix-$os-sdw%.f" $nsdws)
+	sdws=${sdws% }
+else
+	sdws=
+fi
 if [ "$enable_standby" = 1 ]; then
 	standby=$prefix-$os-smdw
 	hosts="$mdw $standby $sdws"
-else
+elif [ -n "$sdws" ]; then
 	hosts="$mdw $sdws"
+else
+	hosts="$mdw"
 fi
 
 # define where to find the gpdb binaries and cluster data
