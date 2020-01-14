@@ -38,3 +38,86 @@ There are some other helper scripts:
 ### How to create a single-host cluster?
 
 Set `nsdws=0` in `config.sh`
+
+### How to login to a host?
+
+```sh
+./login.sh mdw        # login to mdw
+./login.sh mdw date   # execute the date command on mdw and exit
+./login.sh sdw1       # login to sdw1
+```
+
+### How to use the cluster?
+
+```sh
+# login to the mdw
+./login.sh mdw
+
+# source below environment files on mdw
+. $gphome/greenplum_path.sh
+. $gpdata/me.env
+
+# now we can use it
+postgres --gp-version
+psql -c 'select version()'
+```
+
+### How to setup the pgbench TPC-B benchmark?
+
+```sh
+./setup-pgbench.sh
+```
+
+Then we can login to mdw and use it:
+
+```sh
+# login to mdw
+./login.sh mdw
+
+# execute below commands on mdw
+
+. $gphome/greenplum_path.sh
+. $gpdata/me.env
+
+cd pgbench.6x
+
+./pgbench tpcb -s 1000 -i                   # load the data
+./pgbench tpcb -c 80 -j 40 -T 60 -P 1 -r -S # run the select-only benchmark
+./pgbench tpcb -c 80 -j 40 -T 60 -P 1 -r    # run the tpcb-like benchmark
+
+# below settings are recommended for TPC-B benchmark
+gpconfig -c optimizer -v off
+gpconfig -c log_statement -v ddl
+gpconfig -c gp_enable_global_deadlock_detector -v on
+```
+
+### How to setup the sysbench TPC-C benchmark?
+
+```sh
+./setup-sysbench-tpcc.sh
+```
+
+Then we can login to mdw and use it:
+
+```sh
+# login to mdw
+./login.sh mdw
+
+# execute below commands on mdw
+
+. \$gphome/greenplum_path.sh
+. \$gpdata/me.env
+
+cd sysbench-tpcc
+
+./gpdb-tpcc.sh prepare      # load the data
+./gpdb-tpcc.sh run          # run the benchmark
+./gpdb-tpcc.sh cleanup      # delete the data
+
+# below settings are recommended for TPC-C benchmark
+gpconfig -c optimizer -v on
+gpconfig -c log_statement -v all
+gpconfig -c gp_enable_global_deadlock_detector -v on
+```
+
+TODO: explain how to control the data scale and concurrency
