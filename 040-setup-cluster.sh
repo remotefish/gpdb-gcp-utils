@@ -47,7 +47,7 @@ sed -ri \
     -e 's,^(__nsegs)=.*$,\\1=$nsegs,' \
     -e 's,^(__enable_mirrors)=.*$,\\1=$enable_mirrors,' \
     -e 's,^(__enable_standby)=.*$,\\1=$enable_standby,' \
-    /tmp/misc/gpinitsystem.conf
+    ~/misc/gpinitsystem.conf
 
 if [ "$nsdws" -gt 0 ]; then
 	# copy gpdb binaries to segs
@@ -57,7 +57,7 @@ fi
 
 # build the cluster
 gpinitsystem -aq -B32 \
-	-c /tmp/misc/gpinitsystem.conf \
+	-c ~/misc/gpinitsystem.conf \
 	-h $hostfile
 EOF
 

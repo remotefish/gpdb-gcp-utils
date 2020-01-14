@@ -41,7 +41,7 @@ EOF
 # install depends, setup sysctl and limits
 setup_system()
 {
-	gcp_scp ${CWDIR}/misc/ $mdw:/tmp/
+	gcp_scp ${CWDIR}/misc/ $mdw:
 
 	gcp_ssh $mdw -- bash -ex <<EOF
 . $gphome/greenplum_path.sh
@@ -55,16 +55,16 @@ $(join_hostnames $'\n' "$sdws")
 EOF1
 
 # copy helper scripts to all segs
-gpscp -r -f ~/hostfile.segs /tmp/misc =:/tmp/
+gpscp -r -f ~/hostfile.segs ~/misc =:
 
 # deploy and run the scripts
 gpssh -f ~/hostfile.all <<EOF1
-	sudo cp /tmp/misc/limits.conf /etc/security/limits.d/99-gpdb.conf
-	sudo cp /tmp/misc/sysctl.conf /etc/sysctl.d/99-gpdb.conf
+	sudo cp ~/misc/limits.conf /etc/security/limits.d/99-gpdb.conf
+	sudo cp ~/misc/sysctl.conf /etc/sysctl.d/99-gpdb.conf
 
 	sudo sysctl -p /etc/sysctl.d/99-gpdb.conf
 
-	cd /tmp/misc
+	cd ~/misc
 	sudo bash -ex ./$install_deps_script
 EOF1
 EOF
