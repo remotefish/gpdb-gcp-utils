@@ -57,18 +57,18 @@ EOF1
 if [ "$nsdws" -gt 0 ]; then
 	# copy helper scripts to all segs
 	gpscp -r -f ~/hostfile.segs ~/misc =:
-
-	# deploy and run the scripts
-	gpssh -f ~/hostfile.all <<EOF1
-		sudo cp ~/misc/limits.conf /etc/security/limits.d/99-gpdb.conf
-		sudo cp ~/misc/sysctl.conf /etc/sysctl.d/99-gpdb.conf
-
-		sudo sysctl -p /etc/sysctl.d/99-gpdb.conf
-
-		cd ~/misc
-		sudo bash -ex ./$install_deps_script
-EOF1
 fi
+
+# deploy and run the scripts
+gpssh -f ~/hostfile.all <<EOF1
+	sudo cp ~/misc/limits.conf /etc/security/limits.d/99-gpdb.conf
+	sudo cp ~/misc/sysctl.conf /etc/sysctl.d/99-gpdb.conf
+
+	sudo sysctl -p /etc/sysctl.d/99-gpdb.conf
+
+	cd ~/misc
+	sudo bash -ex ./$install_deps_script
+EOF1
 EOF
 }
 
