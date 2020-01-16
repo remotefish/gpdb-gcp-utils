@@ -57,7 +57,11 @@ install_pkg()
 		shift
 	done
 
-	echo "$installer $pkgs"
+	if [ -n "$pkgs" ]; then
+		echo "$installer $pkgs"
+	else
+		echo "echo nothing to install"
+	fi
 }
 
 get_hostname()
