@@ -105,8 +105,8 @@ Then we can login to mdw and use it:
 
 # execute below commands on mdw
 
-. \$gphome/greenplum_path.sh
-. \$gpdata/me.env
+. $gphome/greenplum_path.sh
+. $gpdata/me.env
 
 cd sysbench-tpcc
 
@@ -121,3 +121,30 @@ gpconfig -c gp_enable_global_deadlock_detector -v on
 ```
 
 TODO: explain how to control the data scale and concurrency
+
+### How to setup the Benchmark-SQL TPC-C benchmark?
+
+```sh
+./setup-benchmarksql-tpcc.sh
+```
+
+Then we can login to mdw and use it:
+
+```sh
+# login to mdw
+./login.sh mdw
+
+# execute below commands on mdw
+
+. $gphome/greenplum_path.sh
+. $gpdata/me.env
+
+cd benchmarksql-5.0
+
+# then follow HOW-TO-RUN.txt on the instructions
+
+# below settings are recommended for TPC-C benchmark
+gpconfig -c optimizer -v on
+gpconfig -c log_statement -v all
+gpconfig -c gp_enable_global_deadlock_detector -v on
+```
