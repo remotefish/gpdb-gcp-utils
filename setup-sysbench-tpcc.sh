@@ -31,8 +31,8 @@ sysbench TPC-C benchmark is setup on mdw, to use it:
 
 # execute below commands on mdw
 
-. \$gphome/greenplum_path.sh
-. \$gpdata/me.env
+. $gphome/greenplum_path.sh
+. $gpdata/me.env
 
 cd sysbench-tpcc
 
