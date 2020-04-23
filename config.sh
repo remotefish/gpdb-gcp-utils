@@ -98,6 +98,8 @@ elif [ -n "$sdws" ]; then
 else
 	hosts="$mdw"
 fi
+# also define the aliases like mdw, smdw, sdw1, etc.
+aliases=${hosts//$prefix-$os-/}
 
 # define where to find the gpdb binaries and cluster data
 #

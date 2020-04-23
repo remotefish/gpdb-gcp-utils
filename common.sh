@@ -15,6 +15,23 @@ gcp_ssh()
 		"$@"
 }
 
+gcp_get_internal_ip()
+{
+	$gcloud compute instances \
+		describe --zone $zone \
+		--format='get(networkInterfaces[0].networkIP)' \
+		"$@"
+}
+
+gcp_get_external_ip()
+{
+	$gcloud compute instances \
+		describe --zone $zone \
+		--format='get(networkInterfaces[0].accessConfigs[0].natIP)' \
+		"$@"
+
+}
+
 # generate the command to install packages for current os
 
 # usage: install_pkg pkg...
@@ -31,7 +48,7 @@ install_pkg()
 
 	if [[ "$os" =~ ubuntu ]]; then
 		ostype=ubuntu
-		installer="sudo apt-get install -y"
+		installer="sudo apt-get update -y; sudo apt-get install -y"
 	elif [[ "$os" =~ centos ]]; then
 		ostype=centos
 		installer="sudo yum install -y"
@@ -77,4 +94,15 @@ join_hostnames()
 	local names="$2"
 
 	echo "${names// /$sep}"
+}
+
+list_internal_hosts()
+{
+	local host alias ip
+
+	for alias in $aliases; do
+		host=$(get_hostname $alias)
+		ip=$(gcp_get_internal_ip $host)
+		printf "%-16s%s\n" $ip $alias
+	done
 }

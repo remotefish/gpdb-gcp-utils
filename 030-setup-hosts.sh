@@ -8,10 +8,19 @@ CWDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 setup_ssh()
 {
+	hosts_content=$(list_internal_hosts)
+
 	for host in $hosts; do
 		# generate pub keys
 		gcp_ssh $host -- bash -e <<EOF
 [ -f ~/.ssh/id_rsa ] || ssh-keygen -P '' -f ~/.ssh/id_rsa
+
+# also take the chance to add the aliases to /etc/hosts
+sudo sed -i '/$prefix-$os-/d' /etc/hosts
+sudo tee -a /etc/hosts >/dev/null <<EOF1
+
+$hosts_content
+EOF1
 EOF
 
 		# fetch all pub keys
@@ -29,9 +38,9 @@ EOF
 	done
 
 	for host in $hosts; do
-		# mark all the pub keys as known
+		# mark all the pub keys as known, both hostnames and aliases
 		gcp_ssh $host -- bash -e <<EOF
-for h in $hosts; do
+for h in $hosts $aliases; do
   ssh -o StrictHostKeyChecking=no \$h :
 done
 EOF
@@ -46,13 +55,11 @@ setup_system()
 	gcp_ssh $mdw -- bash -ex <<EOF
 . $gphome/greenplum_path.sh
 
-# generate hostfiles
+# generate hostfiles using the aliases
 cat <<EOF1 >~/hostfile.all
-$(join_hostnames $'\n' "$hosts")
+$(join_hostnames $'\n' "$aliases")
 EOF1
-cat <<EOF1 >~/hostfile.segs
-$(join_hostnames $'\n' "$sdws")
-EOF1
+sed '/mdw/d' <~/hostfile.all >~/hostfile.segs
 
 if [ "$nsdws" -gt 0 ]; then
 	# copy helper scripts to all segs

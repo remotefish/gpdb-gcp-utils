@@ -47,6 +47,7 @@ sed -ri \
     -e 's,^(__nsegs)=.*$,\\1=$nsegs,' \
     -e 's,^(__enable_mirrors)=.*$,\\1=$enable_mirrors,' \
     -e 's,^(__enable_standby)=.*$,\\1=$enable_standby,' \
+    -e 's,^(__master_hostname)=.*$,\\1=mdw,' \
     ~/misc/gpinitsystem.conf
 
 if [ "$nsdws" -gt 0 ]; then
