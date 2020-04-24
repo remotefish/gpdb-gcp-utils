@@ -13,10 +13,10 @@ EOF
 	exit 1
 fi
 
-alias=$1
+host=$1
 shift
 
-host=${prefix}-${os}-${alias}
+host=${prefix}-${os}-${host}
 
 if [ "$1" = '--' ]; then
 	shift
@@ -30,5 +30,4 @@ HINT: to use the cluster please source below files
 
 EOF
 
-ip=$(gcp_get_external_ip $host)
-ssh -t -- $ip "$@"
+gcp_ssh $host --ssh-flag=-t -- "$@"
