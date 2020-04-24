@@ -75,6 +75,11 @@ gpssh -f ~/hostfile.all <<EOF1
 
 	cd ~/misc
 	sudo bash -ex ./$install_deps_script
+
+	# allow more concurrent ssh sessions
+	echo "MaxStartups 500:30:3000" | sudo tee -a /etc/ssh/sshd_config
+	echo "MaxSessions 500" | sudo tee -a /etc/ssh/sshd_config
+	sudo systemctl reload-or-restart sshd.service
 EOF1
 EOF
 }
