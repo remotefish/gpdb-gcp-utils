@@ -18,4 +18,6 @@ exec ./tpcc.lua \
 	--report-interval=1 \
 	--tables=$TABLES \
 	--scale=$SCALE \
+	--trx_level=RC \
+	--use_fk=0 \
 	"$@"
